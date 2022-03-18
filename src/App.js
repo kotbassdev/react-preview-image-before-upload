@@ -1,24 +1,31 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react'
 
-function App() {
+const App = () => {
+
+  const [image,setImage] = React.useState(null);
+  const [preview,setPreview] = React.useState();
+
+  React.useEffect(() => {
+    if(!image) return ;
+
+    const objectURLs = URL.createObjectURL(image);
+    setPreview(objectURLs);
+
+    return () => {
+      console.log('will unmount');
+      URL.revokeObjectURL(objectURLs);
+    }
+  },[image])
+
+  function _onImageChange(e){
+    if(e.target.files.length >= 1) setImage(e.target.files[0]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <React.Fragment>
+      <input type="file" accept='image/*' onChange={_onImageChange} />
+     <img src={preview} width="200" height="200" />
+    </React.Fragment>
   );
 }
 
